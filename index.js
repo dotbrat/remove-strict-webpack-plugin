@@ -1,7 +1,9 @@
 const { Compilation, sources } = require('webpack');
 
+const STRICT_STRING      = '"use strict";\n';
+const REPLACEMENT_STRING = ';\n';
+
 class RemoveStrictPlugin {
-  // eslint-disable-next-line
   apply(compiler) {  
     compiler.hooks.make.tap('RemoveStrictPlugin', (compilation) => {
       compilation.hooks.processAssets.tap(
@@ -12,12 +14,13 @@ class RemoveStrictPlugin {
         () => {
           Object.keys(compilation.assets).forEach((key) => {
             const file = compilation.getAsset(key);
-            const source = file.source.source();
-            const updatedSource = source.replace(/"use strict";\n/g, ';\n');
 
-            compilation.updateAsset(key, new sources.RawSource(updatedSource));
+            compilation.updateAsset(
+              key,
+              new sources.RawSource(file.source.source().replace(STRICT_STRING, REPLACEMENT_STRING))
+            );
           });
-        },
+        }
       );
     });
   }
