@@ -1,7 +1,6 @@
 const { Compilation, sources } = require('webpack');
 
-const STRICT_STRING       = '"use strict";\n';
-const STRICT_STRIN_SINGLE = '\'use strict\';\n';
+const STRICT_STRING       = /"use strict";\n/g;
 const REPLACEMENT_STRING  = ';\n';
 
 class RemoveStrictPlugin {
@@ -18,10 +17,7 @@ class RemoveStrictPlugin {
 
             compilation.updateAsset(
               key,
-              new sources.RawSource(file.source.source()
-                                    .replace(STRICT_STRING, REPLACEMENT_STRING)
-                                    .replace(STRICT_STRIN_SINGLE, REPLACEMENT_STRING)
-                                   )
+              new sources.RawSource(file.source.source().replace(STRICT_STRING, REPLACEMENT_STRING))
             );
           });
         }
